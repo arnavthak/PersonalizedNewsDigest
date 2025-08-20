@@ -10,11 +10,7 @@ from agents.mcp import MCPServerStdio
 load_dotenv(override=True)
 
 
-async def main():
-    # User Input
-    prompt = input("Enter your news preferences/interests:\n")
-    recipient_email = input("Enter your email address:\n")
-
+async def main(prompt, recipient_email):
     # Stage 1: RAG
 
     rag_agent = Agent(
@@ -35,6 +31,8 @@ async def main():
 
     async with MCPServerStdio(params=get_fetch_params()) as fetch_server:
         await fetch_server.connect()
+        # Add a small delay to ensure server is ready
+        await asyncio.sleep(1)
 
         news_agent = Agent(
             name="Fetch Agent",
@@ -49,8 +47,12 @@ async def main():
             for headline in category.headlines:
                 async def fetch_article(headline=headline, category=category):
                     with trace(f"Fetch news article {headline.url} - {category}"):
-                        result = await Runner.run(news_agent, input=headline.url, max_turns=20)
-                        return f"{headline.url}:\n{result.final_output}"
+                        try:
+                            result = await Runner.run(news_agent, input=headline.url, max_turns=20)
+                            return f"URL: {headline.url}\nBrief Description: {headline.text}\n{result.final_output}"
+                        except Exception as e:
+                            print(f"Error fetching {headline.url}: {e}")
+                            return f"URL: {headline.url}\nBrief Description: {headline.text}\nError: Could not fetch article content"
 
                 tasks.append(fetch_article())
 
@@ -89,4 +91,4 @@ async def main():
     print("Stage 4 complete!")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main(prompt="tech, AI, LLMs, blockchain, etc.", recipient_email="arnav.thakrar@gmail.com"))

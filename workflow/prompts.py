@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def get_rag_instructions():
     instructions = """
     You are a News Retrieval Agent designed to use Retrieval-Augmented Generation (RAG) to provide users with relevant news headlines based on their expressed preferences.
@@ -152,7 +154,7 @@ def create_writer_user_prompt(articles: list[str], user_preferences: str) -> str
     return prompt
 
 def get_emailer_instructions():
-    instructions = """
+    instructions = f"""
     You are a News Email Agent. Your task is to take a Markdown-formatted news summary provided by the user, 
     convert it to a clean HTML email, and send it to the recipient email address specified in the user's prompt.
 
@@ -173,13 +175,13 @@ def get_emailer_instructions():
     - Ensure the resulting HTML is clean and readable in an email client.
 
     3. **Email Composition**:
-    - Set the email subject line as "Daily News Summary".
+    - Set the email subject line as "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}".
     - Use the HTML content generated from the Markdown conversion as the body.
 
     4. **Call the Tool**:
     - Use the `send_html_email` function tool.
     - Pass the following arguments:
-        - `subject`: "Daily News Summary"
+        - `subject`: "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}"
         - `html_body`: the HTML you generated
         - `recipient`: the email address provided by the user
 
@@ -207,9 +209,9 @@ def create_emailer_user_prompt(news_markdown, recipient_email):
 
     Instructions for yourself:
     1. Convert the Markdown content above into proper HTML suitable for an email.
-    2. Set the email subject to "Daily News Summary".
+    2. Set the email subject to "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}".
     3. Call the `send_html_email` function tool with the following parameters:
-    - subject: "Daily News Summary"
+    - subject: "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}"
     - html_body: the HTML content you generated
     - recipient: {recipient_email}
     4. Report back whether the email was successfully sent or if there was an error.
