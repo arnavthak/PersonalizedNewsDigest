@@ -47,7 +47,7 @@ def gather_news():
     for article in articles:
         collection.add(
             ids=[article["url"]],
-            documents=[f"{article["title"]}\n\n{article["description"]}"]
+            documents=[f"{article['title']}\n\n{article['description']}"]
         )
 
     print("Done!")

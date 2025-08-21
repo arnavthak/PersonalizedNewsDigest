@@ -90,5 +90,7 @@ async def main(prompt, recipient_email):
 
     print("Stage 4 complete!")
 
+    return result.final_output
+
 if __name__ == "__main__":
     asyncio.run(main(prompt="tech, AI, LLMs, blockchain, etc.", recipient_email="arnav.thakrar@gmail.com"))

@@ -83,7 +83,7 @@ def get_fetch_instructions():
     return instructions
 
 def get_writer_instructions():
-    instructions = """
+    instructions = f"""
     You are a News Summary Writer Agent. Your task is to take in a list of full news article contents (with their source URLs) and the user's preferences for news topics, styles, or focus, and produce a concise, accurate, and well-written news summary in Markdown format.
 
     Follow these rules:
@@ -114,6 +114,7 @@ def get_writer_instructions():
     - Do not fabricate information or speculate beyond what the articles provide.
     - Ensure the summary accurately reflects the content of each article.
     - Always cite the correct source for each article summary.
+    - The current date is {datetime.now().strftime('%Y-%m-%d')} even if some of the articles are from prior days.
 
     Always aim to create a concise, user-friendly news summary that uses the actual content of the articles, aligns with the user's interests, and clearly cites sources with links.
     """
@@ -150,6 +151,7 @@ def create_writer_user_prompt(articles: list[str], user_preferences: str) -> str
     - Focus on articles most relevant to the user's preferences.
     - Do not include raw article text beyond summaries or any metadata.
     - Ensure the digest is readable, coherent, and professional.
+    - The current date is {datetime.now().strftime('%Y-%m-%d')} even if some of the articles are from prior days.
     """
     return prompt
 
@@ -175,13 +177,13 @@ def get_emailer_instructions():
     - Ensure the resulting HTML is clean and readable in an email client.
 
     3. **Email Composition**:
-    - Set the email subject line as "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}".
+    - Set the email subject line as "Daily News Summary {datetime.now().strftime('%Y-%m-%d')}".
     - Use the HTML content generated from the Markdown conversion as the body.
 
     4. **Call the Tool**:
     - Use the `send_html_email` function tool.
     - Pass the following arguments:
-        - `subject`: "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}"
+        - `subject`: "Daily News Summary {datetime.now().strftime('%Y-%m-%d')}"
         - `html_body`: the HTML you generated
         - `recipient`: the email address provided by the user
 
@@ -209,9 +211,9 @@ def create_emailer_user_prompt(news_markdown, recipient_email):
 
     Instructions for yourself:
     1. Convert the Markdown content above into proper HTML suitable for an email.
-    2. Set the email subject to "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}".
+    2. Set the email subject to "Daily News Summary {datetime.now().strftime('%Y-%m-%d')}".
     3. Call the `send_html_email` function tool with the following parameters:
-    - subject: "Daily News Summary {datetime.now().strftime("%Y-%m-%d")}"
+    - subject: "Daily News Summary {datetime.now().strftime('%Y-%m-%d')}"
     - html_body: the HTML content you generated
     - recipient: {recipient_email}
     4. Report back whether the email was successfully sent or if there was an error.
